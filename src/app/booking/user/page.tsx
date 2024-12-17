@@ -1,42 +1,64 @@
 'use client';
 
 import { Page } from '@/components/Page';
-import { List, Section, Cell, Button } from '@telegram-apps/telegram-ui';
+import { List, Section, Placeholder } from '@telegram-apps/telegram-ui';
 import { useState } from 'react';
 import { useSignal, initData } from '@telegram-apps/sdk-react';
+import { useAuth, useBusiness, BookingService } from '@/core/firebase';
+import { BusinessList } from '../components/BusinessList';
 
 export default function UserBookingPage() {
-    const user = useSignal(initData.user);
-    const [businesses] = useState([
-        { id: 1, name: 'Beauty Salon', category: 'Beauty' },
-        { id: 2, name: 'Dental Clinic', category: 'Healthcare' },
-        { id: 3, name: 'Fitness Center', category: 'Sports' },
-    ]);
+    const telegramUser = useSignal(initData.user);
+    const { user, loading: authLoading } = useAuth();
+    const { businesses, loading: businessLoading, error } = useBusiness();
+    const [bookingInProgress, setBookingInProgress] = useState<string | null>(null);
 
-    if (!user) {
+    if (authLoading || businessLoading) {
         return (
             <Page>
-                <div className="p-4">
-                    <p className="text-center mb-4">Please log in to continue</p>
-                    <Button>Login with Telegram</Button>
-                </div>
+                <Placeholder header="Loading" description="Please wait..." />
             </Page>
         );
     }
+
+    if (error) {
+        return (
+            <Page>
+                <Placeholder
+                    header="Error"
+                    description="Failed to load businesses. Please try again later."
+                />
+            </Page>
+        );
+    }
+
+    const handleBooking = async (businessId: string) => {
+        if (!telegramUser) return;
+
+        try {
+            setBookingInProgress(businessId);
+            await BookingService.create({
+                businessId,
+                userId: telegramUser.id.toString(),
+                serviceId: 'default',
+                date: new Date()
+            });
+        } catch (error) {
+            console.error('Booking error:', error);
+        } finally {
+            setBookingInProgress(null);
+        }
+    };
 
     return (
         <Page>
             <List>
                 <Section header="Available Businesses">
-                    {businesses.map((business) => (
-                        <Cell
-                            key={business.id}
-                            subtitle={business.category}
-                            after={<Button size="m">Book Now</Button>}
-                        >
-                            {business.name}
-                        </Cell>
-                    ))}
+                    <BusinessList
+                        businesses={businesses}
+                        onBooking={handleBooking}
+                        bookingInProgress={bookingInProgress}
+                    />
                 </Section>
             </List>
         </Page>
