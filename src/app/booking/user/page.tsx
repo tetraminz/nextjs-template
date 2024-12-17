@@ -34,7 +34,6 @@ export default function UserBookingPage() {
 
     const handleBooking = async (businessId: string) => {
         if (!telegramUser) return;
-
         try {
             setBookingInProgress(businessId);
             await BookingService.create({

@@ -1,7 +1,8 @@
 'use client';
 
 import { Cell, Button } from '@telegram-apps/telegram-ui';
-import type { Business } from '@/core/firebase/types';
+
+import {Business} from "@/core/business/types";
 
 interface BusinessListProps {
   businesses: Business[];

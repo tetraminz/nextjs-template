@@ -7,7 +7,8 @@ import { useSignal, initData } from '@telegram-apps/sdk-react';
 import { useAuth, useBusiness, BusinessService } from '@/core/firebase';
 import { BusinessList } from '../components/BusinessList';
 import { BusinessRegistrationForm } from '../components/BusinessRegistrationForm';
-import type { BusinessRegistrationData } from '@/core/firebase/types';
+
+import {BusinessRegistrationData} from "@/core/business/types";
 
 export default function BusinessBookingPage() {
     const telegramUser = useSignal(initData.user);

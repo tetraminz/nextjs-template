@@ -5,10 +5,25 @@ import { List, Section, Cell, Placeholder } from '@telegram-apps/telegram-ui';
 import { Link } from '@/components/Link/Link';
 import { useAuth } from '@/core/firebase';
 import { useSignal, initData } from '@telegram-apps/sdk-react';
+import { UserGreeting } from '@/components/UserGreeting/UserGreeting';
+import { useEffect } from 'react';
+import { UserService } from '@/core/user/services/user.service';
 
 export default function BookingPage() {
     const user = useSignal(initData.user);
     const { loading } = useAuth();
+
+    // Save user data when they access booking system
+    useEffect(() => {
+        if (user) {
+            UserService.saveUser({
+                id: user.id.toString(),
+                firstName: user.firstName,
+                lastName: user.lastName || '',
+                username: user.username || ''
+            }).catch(console.error);
+        }
+    }, [user]);
 
     if (loading) {
         return (
@@ -20,6 +35,14 @@ export default function BookingPage() {
 
     return (
         <Page>
+            {user && (
+                <UserGreeting
+                    user={{
+                        firstName: user.firstName,
+                        lastName: user.lastName
+                    }}
+                />
+            )}
             <List>
                 <Section
                     header="Booking System"
