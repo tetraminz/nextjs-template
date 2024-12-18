@@ -1,5 +1,9 @@
+'use client';
+
 import { useState } from 'react';
-import { Cell, Button, Calendar, TimePicker } from '@telegram-apps/telegram-ui';
+import { Cell, Button } from '@telegram-apps/telegram-ui';
+import { DatePicker } from './DatePicker/DatePicker';
+import { TimeSlots } from './TimeSlots/TimeSlots';
 import type { Business } from '@/core/business/types';
 
 interface BookingWizardProps {
@@ -36,7 +40,7 @@ export function BookingWizard({ business, onSubmit, onCancel }: BookingWizardPro
                 return (
                     <div>
                         <h3 className="text-lg font-semibold mb-4">Select Date</h3>
-                        <Calendar
+                        <DatePicker
                             value={formData.date}
                             onChange={(date) => setFormData({ ...formData, date })}
                             minDate={new Date()}
@@ -47,10 +51,9 @@ export function BookingWizard({ business, onSubmit, onCancel }: BookingWizardPro
                 return (
                     <div>
                         <h3 className="text-lg font-semibold mb-4">Select Time</h3>
-                        <TimePicker
+                        <TimeSlots
                             value={formData.time}
                             onChange={(time) => setFormData({ ...formData, time })}
-                            interval={30}
                         />
                     </div>
                 );

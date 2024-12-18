@@ -1,19 +1,20 @@
 'use client';
 
-import { Page } from '@/components/Page';
-import { List, Section, Placeholder, Cell } from '@telegram-apps/telegram-ui';
 import { useState } from 'react';
+import { Page } from '@/components/Page';
+import { List, Section, Placeholder } from '@telegram-apps/telegram-ui';
 import { useSignal, initData } from '@telegram-apps/sdk-react';
-import { useAuth, useBusiness, BusinessService } from '@/core/firebase';
+import { useAuth, useBusiness } from '@/core/firebase';
 import { BusinessList } from '../components/BusinessList';
 import { BusinessRegistrationForm } from '../components/BusinessRegistrationForm';
-
-import {BusinessRegistrationData} from "@/core/business/types";
+import type { BusinessRegistrationData } from '@/core/business/types';
+import { useBusinessActions } from '@/core/business';
 
 export default function BusinessBookingPage() {
     const telegramUser = useSignal(initData.user);
     const { user, loading: authLoading } = useAuth();
     const { businesses, loading: businessLoading } = useBusiness(telegramUser?.id.toString());
+    const { registerBusiness, loading: registrationLoading } = useBusinessActions();
     const [isRegistering, setIsRegistering] = useState(false);
 
     if (authLoading || businessLoading) {
@@ -40,10 +41,7 @@ export default function BusinessBookingPage() {
 
         try {
             setIsRegistering(true);
-            await BusinessService.create({
-                ownerId: telegramUser.id.toString(),
-                ...data
-            });
+            await registerBusiness(data, telegramUser.id.toString());
             window.location.reload();
         } catch (error) {
             console.error('Registration error:', error);
@@ -59,7 +57,7 @@ export default function BusinessBookingPage() {
                     <Section header="Register Your Business">
                         <BusinessRegistrationForm
                             onSubmit={handleRegisterBusiness}
-                            isLoading={isRegistering}
+                            isLoading={isRegistering || registrationLoading}
                         />
                     </Section>
                 </List>

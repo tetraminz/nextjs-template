@@ -1,21 +1,14 @@
 import { db } from '../../firebase/config';
-import { 
-  collection, 
-  addDoc, 
+import {
+  collection,
+  addDoc,
   getDocs,
   query,
-  where 
+  where,
+  updateDoc,
+  doc
 } from 'firebase/firestore';
-
-export interface Booking {
-  id?: string;
-  businessId: string;
-  userId: string;
-  serviceId: string;
-  date: Date;
-  status: 'pending' | 'confirmed' | 'cancelled';
-  createdAt: Date;
-}
+import type { Booking, BookingStatus } from '../types';
 
 export const BookingService = {
   async create(booking: Omit<Booking, 'id' | 'createdAt' | 'status'>) {
@@ -35,8 +28,8 @@ export const BookingService = {
   async getByUser(userId: string) {
     try {
       const q = query(
-        collection(db, 'bookings'), 
-        where('userId', '==', userId)
+          collection(db, 'bookings'),
+          where('userId', '==', userId)
       );
       const snapshot = await getDocs(q);
       return snapshot.docs.map(doc => ({
@@ -52,8 +45,8 @@ export const BookingService = {
   async getByBusiness(businessId: string) {
     try {
       const q = query(
-        collection(db, 'bookings'), 
-        where('businessId', '==', businessId)
+          collection(db, 'bookings'),
+          where('businessId', '==', businessId)
       );
       const snapshot = await getDocs(q);
       return snapshot.docs.map(doc => ({
@@ -62,6 +55,28 @@ export const BookingService = {
       })) as Booking[];
     } catch (error) {
       console.error('Error getting business bookings:', error);
+      throw error;
+    }
+  },
+
+  async updateStatus(bookingId: string, status: BookingStatus) {
+    try {
+      const bookingRef = doc(db, 'bookings', bookingId);
+      await updateDoc(bookingRef, { status });
+      return true;
+    } catch (error) {
+      console.error('Error updating booking status:', error);
+      throw error;
+    }
+  },
+
+  async updateDate(bookingId: string, date: Date) {
+    try {
+      const bookingRef = doc(db, 'bookings', bookingId);
+      await updateDoc(bookingRef, { date });
+      return true;
+    } catch (error) {
+      console.error('Error updating booking date:', error);
       throw error;
     }
   }
