@@ -1,14 +1,7 @@
-export type BookingStatus = 'pending' | 'confirmed' | 'cancelled';
+import type { BookingDocument, BookingStatus } from './services/types';
 
-export interface Booking {
-    id?: string;
-    businessId: string;
-    userId: string;
-    serviceId: string;
-    date: Date;
-    status: BookingStatus;
-    createdAt: Date;
-}
+export type { BookingStatus };
+export type Booking = BookingDocument;
 
 export interface BookingFormData {
     date: Date;

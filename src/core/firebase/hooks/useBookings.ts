@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { BookingService, type Booking } from '../../booking/services/booking.service';
+import { BookingService } from '../../booking/services/booking.service';
+import type { Booking } from '../../booking/types';
 
 export function useBookings(type: 'user' | 'business', id: string) {
   const [bookings, setBookings] = useState<Booking[]>([]);
@@ -9,9 +10,9 @@ export function useBookings(type: 'user' | 'business', id: string) {
   useEffect(() => {
     async function loadBookings() {
       try {
-        const data = type === 'user' 
-          ? await BookingService.getByUser(id)
-          : await BookingService.getByBusiness(id);
+        const data = type === 'user'
+            ? await BookingService.getByUser(id)
+            : await BookingService.getByBusiness(id);
         setBookings(data);
       } catch (err) {
         setError(err as Error);

@@ -1,15 +1,8 @@
+'use client';
+
 import { useState } from 'react';
 import { Input, Select } from '@telegram-apps/telegram-ui';
-
-interface BusinessFilterProps {
-  categories: string[];
-  onFilterChange: (filters: BusinessFilters) => void;
-}
-
-interface BusinessFilters {
-  search: string;
-  category: string;
-}
+import type { BusinessFilters, BusinessFilterProps } from './types';
 
 export function BusinessFilter({ categories, onFilterChange }: BusinessFilterProps) {
   const [filters, setFilters] = useState<BusinessFilters>({

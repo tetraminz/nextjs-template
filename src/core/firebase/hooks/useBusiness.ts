@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { BusinessService, type Business } from '../../business/services/business.service';
+import { BusinessService } from '../../business/services/business.service';
+import type { Business } from '../../business/types';
 
 export function useBusiness(ownerId?: string) {
   const [businesses, setBusinesses] = useState<Business[]>([]);

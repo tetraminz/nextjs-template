@@ -1,25 +1,17 @@
 import { db } from '../../firebase/config';
-import { 
-  collection, 
-  addDoc, 
-  getDocs, 
-  doc, 
+import {
+  collection,
+  addDoc,
+  getDocs,
+  doc,
   updateDoc,
   query,
   where
 } from 'firebase/firestore';
-
-export interface Business {
-  id?: string;
-  ownerId: string;
-  name: string;
-  category: string;
-  description: string;
-  createdAt: Date;
-}
+import type { BusinessDocument } from './types';
 
 export const BusinessService = {
-  async create(business: Omit<Business, 'id' | 'createdAt'>) {
+  async create(business: Omit<BusinessDocument, 'id' | 'createdAt'>) {
     try {
       const docRef = await addDoc(collection(db, 'businesses'), {
         ...business,
@@ -35,14 +27,14 @@ export const BusinessService = {
   async getByOwner(ownerId: string) {
     try {
       const q = query(
-        collection(db, 'businesses'), 
-        where('ownerId', '==', ownerId)
+          collection(db, 'businesses'),
+          where('ownerId', '==', ownerId)
       );
       const snapshot = await getDocs(q);
       return snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
-      })) as Business[];
+      })) as BusinessDocument[];
     } catch (error) {
       console.error('Error getting businesses:', error);
       throw error;
@@ -55,14 +47,14 @@ export const BusinessService = {
       return snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
-      })) as Business[];
+      })) as BusinessDocument[];
     } catch (error) {
       console.error('Error getting all businesses:', error);
       throw error;
     }
   },
 
-  async update(id: string, data: Partial<Business>) {
+  async update(id: string, data: Partial<BusinessDocument>) {
     try {
       const docRef = doc(db, 'businesses', id);
       await updateDoc(docRef, data);

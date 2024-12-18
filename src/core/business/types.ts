@@ -1,10 +1,5 @@
-export interface Business {
-    id?: string;
-    ownerId: string;
-    name: string;
-    category: string;
-    description: string;
-    createdAt: Date;
-}
+import type { BusinessDocument } from './services/types';
+
+export type Business = BusinessDocument;
 
 export type BusinessRegistrationData = Pick<Business, 'name' | 'category' | 'description'>;

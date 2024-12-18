@@ -7,9 +7,9 @@ import { BusinessView } from './BusinessView';
 import { MainView } from './MainView';
 import { LoadingView } from './LoadingView';
 import { AuthRequiredView } from './AuthRequiredView';
-import { BusinessFilter } from '../../components/BusinessFilter';
-import type { Business } from '@/core/business/types';
+import { filterBusinesses, getUniqueCategories } from '@/core/business/utils/filters';
 import type { BusinessFilters } from '../../components/BusinessFilter';
+import type { Business } from '@/core/business/types';
 
 interface UserBookingPageContentProps {
   onBusinessSelect: (business: Business) => void;
@@ -30,14 +30,8 @@ export function UserBookingPageContent({ onBusinessSelect }: UserBookingPageCont
       telegramUser?.id.toString() || ''
   );
 
-  const filteredBusinesses = businesses.filter(business => {
-    const matchesSearch = business.name.toLowerCase().includes(filters.search.toLowerCase()) ||
-        business.description.toLowerCase().includes(filters.search.toLowerCase());
-    const matchesCategory = !filters.category || business.category === filters.category;
-    return matchesSearch && matchesCategory;
-  });
-
-  const categories = [...new Set(businesses.map(b => b.category))];
+  const filteredBusinesses = filterBusinesses(businesses, filters.search, filters.category);
+  const categories = getUniqueCategories(businesses);
 
   if (authLoading || businessLoading) {
     return <LoadingView />;

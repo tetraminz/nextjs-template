@@ -7,9 +7,9 @@ import { TabNavigation } from './TabNavigation';
 import { BusinessesSection } from './BusinessesSection';
 import { BookingsSection } from './BookingsSection';
 import { BusinessFilter } from '../../components/BusinessFilter';
+import type { BusinessFilters } from '../../components/BusinessFilter';
 import type { Business } from '@/core/business/types';
 import type { Booking } from '@/core/booking/types';
-import type { BusinessFilters } from '../../components/BusinessFilter';
 
 interface MainViewProps {
     businesses: Business[];

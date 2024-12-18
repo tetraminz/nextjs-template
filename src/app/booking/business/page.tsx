@@ -2,11 +2,11 @@
 
 import { useState } from 'react';
 import { Page } from '@/components/Page';
-import { List, Section, Placeholder } from '@telegram-apps/telegram-ui';
+import {List, Section, Placeholder, Cell} from '@telegram-apps/telegram-ui';
 import { useSignal, initData } from '@telegram-apps/sdk-react';
 import { useAuth, useBusiness } from '@/core/firebase';
 import { BusinessList } from '../components/BusinessList';
-import { BusinessRegistrationForm } from '../components/BusinessRegistrationForm';
+import { BusinessRegistrationForm } from '../components/BusinessRegistrationForm/BusinessRegistrationForm';
 import type { BusinessRegistrationData } from '@/core/business/types';
 import { useBusinessActions } from '@/core/business';
 

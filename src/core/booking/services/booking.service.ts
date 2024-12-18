@@ -8,14 +8,14 @@ import {
   updateDoc,
   doc
 } from 'firebase/firestore';
-import type { Booking, BookingStatus } from '../types';
+import type { BookingDocument, BookingStatus } from './types';
 
 export const BookingService = {
-  async create(booking: Omit<Booking, 'id' | 'createdAt' | 'status'>) {
+  async create(booking: Omit<BookingDocument, 'id' | 'createdAt' | 'status'>) {
     try {
       const docRef = await addDoc(collection(db, 'bookings'), {
         ...booking,
-        status: 'pending',
+        status: 'pending' as BookingStatus,
         createdAt: new Date()
       });
       return docRef.id;
@@ -35,7 +35,7 @@ export const BookingService = {
       return snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
-      })) as Booking[];
+      })) as BookingDocument[];
     } catch (error) {
       console.error('Error getting user bookings:', error);
       throw error;
@@ -52,7 +52,7 @@ export const BookingService = {
       return snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
-      })) as Booking[];
+      })) as BookingDocument[];
     } catch (error) {
       console.error('Error getting business bookings:', error);
       throw error;
