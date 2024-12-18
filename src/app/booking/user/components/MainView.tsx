@@ -6,21 +6,29 @@ import { Page } from '@/components/Page';
 import { TabNavigation } from './TabNavigation';
 import { BusinessesSection } from './BusinessesSection';
 import { BookingsSection } from './BookingsSection';
+import { BusinessFilter } from '../../components/BusinessFilter';
 import type { Business } from '@/core/business/types';
 import type { Booking } from '@/core/booking/types';
+import type { BusinessFilters } from '../../components/BusinessFilter';
 
 interface MainViewProps {
     businesses: Business[];
     userBookings: Booking[];
     userBookingsLoading: boolean;
-    onBusinessClick: (businessId: string) => void;
+    onBusinessSelect: (business: Business) => void;
+    filters: BusinessFilters;
+    onFilterChange: (filters: BusinessFilters) => void;
+    categories: string[];
 }
 
 export function MainView({
                              businesses,
                              userBookings,
                              userBookingsLoading,
-                             onBusinessClick
+                             onBusinessSelect,
+                             filters,
+                             onFilterChange,
+                             categories
                          }: MainViewProps) {
     const [activeTab, setActiveTab] = useState<'businesses' | 'bookings'>('businesses');
 
@@ -31,12 +39,19 @@ export function MainView({
                 onTabChange={setActiveTab}
             />
             <List>
-                {activeTab === 'businesses' ? (
-                    <BusinessesSection
-                        businesses={businesses}
-                        onBusinessClick={onBusinessClick}
-                    />
-                ) : (
+                {activeTab === 'businesses' && (
+                    <>
+                        <BusinessFilter
+                            categories={categories}
+                            onFilterChange={onFilterChange}
+                        />
+                        <BusinessesSection
+                            businesses={businesses}
+                            onBusinessSelect={onBusinessSelect}
+                        />
+                    </>
+                )}
+                {activeTab === 'bookings' && (
                     <BookingsSection
                         bookings={userBookings}
                         loading={userBookingsLoading}
